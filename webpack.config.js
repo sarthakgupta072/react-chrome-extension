@@ -7,7 +7,8 @@ module.exports = {
     mode: 'development',
     devtool: 'cheap-module-source-map',
     entry: {
-        popup: path.resolve('src/popup/popup.tsx')
+        popup: path.resolve('src/popup/popup.tsx'),
+        options: path.resolve('src/options/options.tsx')
     }, // tells webpack where to look for files to bundle them. Builds a dependency graph
     module: {
         rules: [
@@ -23,16 +24,12 @@ module.exports = {
         new CopyPlugin({
             patterns: [
                 {
-                    from: path.resolve('src/manifest.json'),
+                    from: path.resolve('src/static'),
                     to: path.resolve('dist')
                 }
             ]
         }),
-        new HtmlPlugin({
-            title: 'React Extension',
-            filename: 'popup.html',
-            chunks: ['popup']
-        })
+        ...getHtmlPlugins(['popup', 'options'])
     ],
     resolve: {
         extensions: ['.tsx', '.ts', '.js']
@@ -40,5 +37,19 @@ module.exports = {
     output: {
         filename: '[name].js', // File name of the bundled file
         path: path.resolve(__dirname, 'dist'), // dist means distribution
+    },
+    optimization: {
+        splitChunks: {
+            chunks: 'all' // It allows our chunks to share module. Options and popup are using react, so it can be shared.
+        }
     }
+}
+
+
+function getHtmlPlugins(chunks) {
+    return chunks.map(chunk => new HtmlPlugin({
+        title: 'React Extension',
+        filename: `${chunk}.html`,
+        chunks: [chunk]
+    }))
 }
