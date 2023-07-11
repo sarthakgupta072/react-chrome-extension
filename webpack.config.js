@@ -17,6 +17,10 @@ module.exports = {
                 test: /\.tsx?$/, // files to be loaded through this loader. Takes regex
                 exclude: /node_modules/,
 
+            },
+            {
+                use: ['style-loader', 'css-loader'],
+                test: /\.css$/
             }
         ]
     },
