@@ -8,7 +8,9 @@ module.exports = {
     devtool: 'cheap-module-source-map',
     entry: {
         popup: path.resolve('src/popup/popup.tsx'),
-        options: path.resolve('src/options/options.tsx')
+        options: path.resolve('src/options/options.tsx'),
+        background: path.resolve('src/background/background.ts'),
+        contentScript: path.resolve('src/contentScript/contentScript.ts'),
     }, // tells webpack where to look for files to bundle them. Builds a dependency graph
     module: {
         rules: [
@@ -54,6 +56,7 @@ module.exports = {
 }
 
 
+// Forms an html file with embedded javascript based on configuration
 function getHtmlPlugins(chunks) {
     return chunks.map(chunk => new HtmlPlugin({
         title: 'React Extension',
